@@ -43,10 +43,12 @@ that will setup your OpenEMR database and admin account
 When setup is complete, login to the system with your new admin credentials.
 
 ## 1 - OpenEMR SMART Capabilities
+### Enabling FHIR API use
 First, enable the Standard REST and FHIR API endpoints by navigating to `Admin -> Globals -> Connectors` and toggling:
 * _Enable OpenEMR standard REST API_
 * _Enable OpenEMR Standard FHIR REST API_
 
+### Registering a client
 Next, register a new client by navigating to `Admin -> System -> API Clients -> Register New
 App` and filling in the following fields:
 * **Application Type** - Public
@@ -71,22 +73,47 @@ Then, select the following scopes:
 
 Submit the registration form and copy the **Client APP ID** in a secure location. If you haven't already, run your SMART on FHIR application, and then update its Client ID accordingly.
 
-In order to enable the client for active use, return to `Admin -> System -> API Clients`, edit the client just created, and select **Enable Client**.
+In order to enable the client for active use, return to `Admin -> System -> API Clients`, edit the client you just created, and select **Enable Client**.
 
-Navigate to `Patient -> New/Search` and create a new patient
+### Launching SoF application
+Navigate to `Patient -> New/Search` and create a new patient.
 * For testing purposes, simply inputting **Name**, **DOB**, and **Sex** is enough
 
 At the bottom of the patient dashboard, expand **SMART Enabled Apps** and
-click the Launch button for your client app, where you will OpenEMR login with your admin account.
+click the Launch button for your client app, where you will be prompted to login as an OpenEMR administrator account.
 
 Finally, authorize the application scopes to view the SoF App.
 
 ## 2 - OpenEMR FHIR Capabilities
+### Authorizing API use on Swagger
 Querying FHIR API endpoints will require you to toggle API endpoints and register a new SoF client by following the steps of **1 - OpenEMR SMART Capabilities** above.
 
 After registering your client, navigate to [Swagger](http://localhost/openemr/swagger/index.html) and click the green **Authorize** button.
 
-IN PROGRESS...
+Fill in the `client_id` and `client_secret` fields, toggle the scopes listed in **1 - OpenEMR SMART Capabilities**, and scroll down and click **Authorize**.
+
+You will be prompted to login as an OpenEMR administrator account.
+
+Finally, authorize the application scopes one final time.
+
+### CRUD/Querying FHIR API calls
+At this point, your client is currently authorized to make API FHIR calls.
+
+To test this, scroll down to `GET /fhir/Patient`, click **Try it out**, then **Execute**.
+
+#### Using cURL command
+Copy and execute the cURL command onto a command line interface and verify that the patient you created in step 6 is displayed as a FHIR resource. Example of `GET /fhir/Patient` cURL command:
+```
+$ curl -X 'GET' \
+  'http://localhost/openemr/apis/default/fhir/Patient' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiSdf82j394SjdfJWEe9JwoiJSUzI1NiSdf82j394Sj2'
+```
+
+#### Using Postman
+Open Postman and navigate to `Import ➜ Raw text` and paste the cURL command from the
+previous step. This will automatically create the Postman request accordingly.
+
 
 ## Resources / Links
 * <a href="https://www.apachefriends.org/download.html" target="_blank">XAMPP Download</a>
